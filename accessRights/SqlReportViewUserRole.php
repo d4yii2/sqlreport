@@ -3,7 +3,7 @@
 namespace d4yii2\sqlreport\accessRights;
 
 use CompanyRights\components\UserRoleInterface;
-use d3modules\admin\accessRights\SystemAdminUserRole;
+use yii2d3\d3persons\accessRights\SystemAdminUserRole;
 use Yii;
 
 class SqlReportViewUserRole implements UserRoleInterface

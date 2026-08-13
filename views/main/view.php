@@ -1,7 +1,7 @@
 <?php
 
 use d3system\yii2\web\D3SystemView;
-use eaBlankonThema\components\FlashHelper;
+use d3system\helpers\FlashHelper;
 use eaBlankonThema\widget\ThGridView;
 use eaBlankonThema\widget\ThAlertList;
 use eaBlankonThema\assetbundles\CoreAsset;
