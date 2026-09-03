@@ -2,18 +2,19 @@
 
 namespace d4yii2\sqlreport\controllers;
 
-use d3system\exceptions\D3UserAlertException;
 use d4yii2\sqlreport\accessRights\SqlReportFullUserRole;
 use d4yii2\sqlreport\accessRights\SqlReportViewUserRole;
 use d4yii2\sqlreport\models\Sqlreport;
 use d4yii2\sqlreport\models\SqlreportSearch;
 use eaBlankonThema\yii2\web\LayoutController;
+use HttpException;
+use Throwable;
 use Yii;
 use Exception;
-use eaBlankonThema\components\FlashHelper;
-use yii\web\HttpException;
+use d3system\helpers\FlashHelper;
 use yii\filters\AccessControl;
 use d4yii2\sqlreport\Module;
+use yii\web\Response;
 
 /**
  * MainController implements the CRUD actions for Sqlreport model.
@@ -92,7 +93,7 @@ class MainController extends LayoutController
      * Creates a new Sqlreport model.
      * If creation is successful, the browser will be redirected
      *  to the 'view' page or back, if parameter $goBack is true.
-     * @return string|\yii\console\Response|\yii\web\Response
+     * @return string|\yii\console\Response|Response
      * @throws \yii\db\Exception
      */
     public function actionCreate()
@@ -120,8 +121,9 @@ class MainController extends LayoutController
      * Updates an existing Sqlreport model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
-     * @return string|\yii\web\Response
-     * @throws HttpException|\yii\db\Exception
+     * @return string|Response
+     * @throws \yii\db\Exception
+     * @throws HttpException
      */
     public function actionUpdate(int $id)
     {
@@ -138,7 +140,11 @@ class MainController extends LayoutController
 
     }
 
-    public function actionView(int $id)
+    /**
+     * @throws HttpException
+     * @throws \yii\db\Exception
+     */
+    public function actionView(int $id): string
     {
 
         $model = $this->findModel($id);
@@ -152,8 +158,8 @@ class MainController extends LayoutController
      * Deletes an existing Sqlreport model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
-     * @return \yii\web\Response
-     * @throws \Throwable
+     * @return Response
+     * @throws Throwable
      */
     public function actionDelete(int $id)
     {
@@ -163,10 +169,6 @@ class MainController extends LayoutController
         try {
             $this->findModel($id)->delete();
             $transaction->commit();
-        } catch (D3UserAlertException $e) {
-            $transaction->rollback();
-            FlashHelper::addDanger($e->getMessage());
-            return $this->redirect(['view', 'id' => $id]);
         } catch (Exception $e) {
             $transaction->rollback();
             FlashHelper::processException($e);
@@ -183,6 +185,7 @@ class MainController extends LayoutController
      * @param integer $id
      * @return Sqlreport the loaded model
      * @throws \yii\db\Exception if the model cannot be found
+     * @throws HttpException
      */
     protected function findModel(int $id): Sqlreport
     {
