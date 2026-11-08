@@ -2,6 +2,10 @@
 
 ## Features
 
+- Saved SQL reports are shown as a table (`sqlreport/main/view`).
+- `SELECT` / `WITH` SQL is checked with `EXPLAIN` on save; syntax errors are shown on the form.
+- If a saved report's SQL fails when opened, the database error is shown as a message instead of an error page.
+
 
 ## Installation
 
