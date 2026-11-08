@@ -22,8 +22,19 @@ $this->title = Yii::t(
 );
 $this->setPageHeader($this->title);
 $this->setPageIcon('');
-if (!$data = Yii::$app->db->createCommand($model->sql)->queryAll()) {
-    FlashHelper::addInfo(Yii::t('sqlreport', 'No data found!'));
+$data = [];
+try {
+    if (!$data = Yii::$app->db->createCommand($model->sql)->queryAll()) {
+        FlashHelper::addInfo(Yii::t('sqlreport', 'No data found!'));
+    }
+} catch (\yii\db\Exception $e) {
+    Yii::warning('SQL report #' . $model->id . ' failed: ' . $e->getMessage(), __METHOD__);
+    $errorInfo = $e->errorInfo;
+    FlashHelper::addDanger(
+        Yii::t('sqlreport', 'Report SQL error: {error}', [
+            'error' => $errorInfo[2] ?? $e->getMessage(),
+        ])
+    );
 }
 $this->addPageButtons(ThReturnButton::widget([
     'backUrl' => ['index'],
